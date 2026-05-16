@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Metadata } from 'next';
 
@@ -5,6 +6,8 @@ import { Metadata } from 'next';
 type Props = {
   params: Promise<{ slug: string }> | { slug: string };
 };
+
+
 
 // 1. FUNCIÓN PARA GENERAR LA TARJETA DINÁMICA DE INSTAGRAM
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -45,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `Catálogo de ${categoria}`,
       description: `Mirá el catalogo en línea o descargalo para ver sin conexión`,
-      images: ['https://visor-catalogos.vercel.app/opengraph-image.jpg'],
+      images: ['https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png'],
     },
     alternates: {
       canonical: `https://visor-catalogos.vercel.app/ver/${slug}`,
@@ -64,16 +67,17 @@ export async function generateStaticParams() {
   ];
 }
 
-// 3. COMPONENTE PRINCIPAL DE LA PÁGINA
 export default async function VisorPage({ params }: Props) {
-  // Resolución ultra-segura del slug para el renderizado del servidor de Vercel
+  // 1. Resolvemos el slug de forma segura
   const resolvedParams = await params;
   const slug = resolvedParams?.slug;
 
-  // Si por alguna razón extraña no hay slug, evitamos que la página rompa con un 500
-  if (!slug) {
-    return <div className="min-h-screen bg-black text-white p-10">Cargando catálogo...</div>;
+  // 2. EL BLINDAJE: Si Next.js o Meta mandan un slug indefinido, 
+  // devolvemos un HTML simple en lugar de romper la página con un error 500
+  if (!slug || !['boda', 'book', 'cumple', 'locacion', 'look'].includes(slug)) {
+    return <div className="min-h-screen bg-black text-white p-10">Catálogo no encontrado.</div>;
   }
+
 
   let totalPaginas = 6; 
   if (slug === 'cumple') totalPaginas = 4; 
