@@ -1,13 +1,14 @@
-
 import React from 'react';
 import { Metadata } from 'next';
 
-// Forzamos a TypeScript y Next.js a entender que los parámetros vienen listos en el build estático
+// 💡 AGREGA ESTAS 3 LÍNEAS ACÁ ARRIBA
+export const dynamic = 'force-static';
+export const dynamicParams = false;
+export const revalidate = false;
+
 type Props = {
   params: Promise<{ slug: string }> | { slug: string };
 };
-
-
 
 // 1. FUNCIÓN PARA GENERAR LA TARJETA DINÁMICA DE INSTAGRAM
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
