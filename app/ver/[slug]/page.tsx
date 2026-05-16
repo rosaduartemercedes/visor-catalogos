@@ -27,14 +27,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     
     openGraph: {
-      title: `Catálogo de ${categoria}`,
-      description: `Mirá el catalogo en línea o descargalo para ver sin conexión`,
-      url: `https://visor-catalogos.vercel.app/ver/${slug}`,
-      siteName: 'Look Photo & Film',
-      locale: 'es_AR',
-      type: 'website',
-    },
-  };
+    title: `Catálogo de ${categoria}`,
+    description: `Mirá el catalogo en línea o descargalo para ver sin conexión`,
+    url: `https://visor-catalogos.vercel.app/ver/${slug}`,
+    siteName: 'Look Photo & Film',
+    locale: 'es_AR',
+    type: 'website',
+    // ASÍ LE DECIMOS QUE BUSQUE LA IMAGEN EN LA CARPETA PUBLIC
+    images: [
+      {
+        url: '/opengraph-image.jpg', 
+        width: 1200,
+        height: 630,
+        alt: `Catálogo de ${categoria}`,
+      },
+    ],
+  },
+};
+
 }
 
 
