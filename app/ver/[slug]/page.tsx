@@ -1,21 +1,19 @@
-// app/ver/[slug]/page.tsx
 import React from 'react';
-import { Metadata } from 'next'; // 1. Importamos el tipo Metadata
+import { Metadata } from 'next';
 
+// Forzamos a TypeScript y Next.js a entender que los parámetros vienen listos en el build estático
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }> | { slug: string };
 };
 
-
-// 2. FUNCIÓN PARA GENERAR LA TARJETA DINÁMICA DE INSTAGRAM
+// 1. FUNCIÓN PARA GENERAR LA TARJETA DINÁMICA DE INSTAGRAM
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // Aseguramos la resolución correcta del slug
+  // Manejo seguro de params tanto si es Promesa como si es Objeto plano
   const resolvedParams = await params;
   const slug = resolvedParams?.slug;
 
   if (!slug) return {};
   
-  // Maquillamos un poco el nombre para el título (boda -> Bodas, cumple -> Cumpleaños, book -> Books)
   let categoria = slug.charAt(0).toUpperCase() + slug.slice(1);
   
   if (slug === 'boda') categoria = 'packs para bodas.';
@@ -36,22 +34,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png', // URL absoluta recomendada para redes
+          url: 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png', // O tu link de Imgur si prefieres asegurar
           width: 1200,
           height: 630,
           alt: `Catálogo de ${categoria}`,
         },
       ],
     },
-    // Añadimos esto para ayudar a Meta a entender la ruta limpia
+    twitter: {
+      card: 'summary_large_image',
+      title: `Catálogo de ${categoria}`,
+      description: `Mirá el catalogo en línea o descargalo para ver sin conexión`,
+      images: ['https://visor-catalogos.vercel.app/opengraph-image.jpg'],
+    },
     alternates: {
       canonical: `https://visor-catalogos.vercel.app/ver/${slug}`,
     }
   };
 }
 
-
-// 3. AGREGAR ESTA FUNCIÓN PARA QUE VERCEL SEPA QUÉ RUTAS EXISTEN EN EL BUILD
+// 2. FUNCIÓN PARA GENERAR LAS RUTAS ESTÁTICAS EN VERCEL
 export async function generateStaticParams() {
   return [
     { slug: 'boda' },
@@ -62,34 +64,30 @@ export async function generateStaticParams() {
   ];
 }
 
-
-
-
+// 3. COMPONENTE PRINCIPAL DE LA PÁGINA
 export default async function VisorPage({ params }: Props) {
-  // slug será "boda", "books" o "cumple" según la URL
-  const { slug } = await params;
+  // Resolución ultra-segura del slug para el renderizado del servidor de Vercel
+  const resolvedParams = await params;
+  const slug = resolvedParams?.slug;
 
-  
+  // Si por alguna razón extraña no hay slug, evitamos que la página rompa con un 500
+  if (!slug) {
+    return <div className="min-h-screen bg-black text-white p-10">Cargando catálogo...</div>;
+  }
 
-  // Definimos dinámicamente cuántas páginas tiene cada catálogo
-  // Si agregas otro catálogo en el futuro, solo sumas una línea aquí
   let totalPaginas = 6; 
-  if (slug === 'cumple') totalPaginas = 4; // Ajusta según corresponda
+  if (slug === 'cumple') totalPaginas = 4; 
   if (slug === 'book') totalPaginas = 3; 
   if (slug === 'boda') totalPaginas = 6; 
   if (slug === 'locacion') totalPaginas = 9; 
   if (slug === 'look') totalPaginas = 6; 
   
-  // Genera el array dinámicamente [1, 2, 3, ...] basado en las páginas que correspondan
   const paginas = Array.from({ length: totalPaginas }, (_, i) => i + 1);
-
-  // La ruta del PDF y las imágenes se adaptan solas
   const pdfPath = `/catalogos/${slug}/${slug}.pdf`;
 
   return (
     <main className="flex min-h-screen bg-black text-zinc-400">
-      
-      {/* 1. BARRA LATERAL IZQUIERDA (Miniaturas Dinámicas) */}
+      {/* Barra Lateral Izquierda */}
       <aside className="fixed left-0 top-0 h-full w-20 md:w-32 bg-zinc-900/50 backdrop-blur-md border-r border-zinc-800 flex flex-col items-center py-6 gap-4 z-50 overflow-y-auto no-scrollbar">
         <div className="mb-4 opacity-50 text-white">
            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -115,10 +113,8 @@ export default async function VisorPage({ params }: Props) {
         ))}
       </aside>
 
-      {/* 2. CONTENIDO PRINCIPAL (Visor) */}
+      {/* Contenido Principal */}
       <div className="flex-1 ml-20 md:ml-32">
-        
-        {/* Nav Superior */}
         <nav className="sticky top-0 z-40 p-4 bg-black/80 backdrop-blur-md border-b border-zinc-800 flex justify-between items-center px-8">
           <div className="flex flex-col">
             <span className="font-bold tracking-[0.3em] text-[10px] uppercase text-white">
@@ -146,7 +142,6 @@ export default async function VisorPage({ params }: Props) {
           </div>
         </nav>
 
-        {/* Scroll de imágenes */}
         <section className="flex flex-col items-center py-12 gap-20 px-4 md:px-10">
           {paginas.map((num) => (
             <div 
@@ -172,7 +167,6 @@ export default async function VisorPage({ params }: Props) {
             </div>
           ))}
 
-          {/* BOTÓN FINAL DE DESCARGA */}
           <div className="py-10 flex flex-col items-center gap-6">
             <p className="text-zinc-500 text-[10px] tracking-widest uppercase">¿Prefieres leerlo sin conexión?</p>
             <a 
