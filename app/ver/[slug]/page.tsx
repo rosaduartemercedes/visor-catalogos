@@ -20,6 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (slug === 'cumple') categoria = 'packs para fiestas.'; // <--- Modificá acá lo que quieras mostrar
   if (slug === 'locacion') categoria = 'locaciones.';
   if (slug === 'look') categoria = 'looks.';
+
+  
   
 
   return {
@@ -34,6 +36,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 }
+
+
+
+// 3. AGREGAR ESTA FUNCIÓN PARA QUE VERCEL SEPA QUÉ RUTAS EXISTEN EN EL BUILD
+export async function generateStaticParams() {
+  return [
+    { slug: 'boda' },
+    { slug: 'book' },
+    { slug: 'cumple' },
+    { slug: 'locacion' },
+    { slug: 'look' },
+  ];
+}
+
+
 
 
 export default async function VisorPage({ params }: Props) {
