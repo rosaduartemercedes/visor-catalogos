@@ -9,44 +9,46 @@ type Props = {
 
 // 2. FUNCIÓN PARA GENERAR LA TARJETA DINÁMICA DE INSTAGRAM
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  // Aseguramos la resolución correcta del slug
+  const resolvedParams = await params;
+  const slug = resolvedParams?.slug;
+
+  if (!slug) return {};
   
   // Maquillamos un poco el nombre para el título (boda -> Bodas, cumple -> Cumpleaños, book -> Books)
   let categoria = slug.charAt(0).toUpperCase() + slug.slice(1);
   
-  
   if (slug === 'boda') categoria = 'packs para bodas.';
   if (slug === 'book') categoria = 'packs para books.';
-  if (slug === 'cumple') categoria = 'packs para fiestas.'; // <--- Modificá acá lo que quieras mostrar
+  if (slug === 'cumple') categoria = 'packs para fiestas.'; 
   if (slug === 'locacion') categoria = 'locaciones.';
   if (slug === 'look') categoria = 'looks.';
 
-  
-  
-
   return {
-    
-    openGraph: {
     title: `Catálogo de ${categoria}`,
     description: `Mirá el catalogo en línea o descargalo para ver sin conexión`,
-    url: `https://visor-catalogos.vercel.app/ver/${slug}`,
-    siteName: 'Look Photo & Film',
-    locale: 'es_AR',
-    type: 'website',
-    // ASÍ LE DECIMOS QUE BUSQUE LA IMAGEN EN LA CARPETA PUBLIC
-    images: [
-      {
-        url: '/opengraph-image.jpg', 
-        width: 1200,
-        height: 630,
-        alt: `Catálogo de ${categoria}`,
-      },
-    ],
-  },
-};
-
+    openGraph: {
+      title: `Catálogo de ${categoria}`,
+      description: `Mirá el catalogo en línea o descargalo para ver sin conexión`,
+      url: `https://visor-catalogos.vercel.app/ver/${slug}`,
+      siteName: 'Look Photo & Film',
+      locale: 'es_AR',
+      type: 'website',
+      images: [
+        {
+          url: 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png', // URL absoluta recomendada para redes
+          width: 1200,
+          height: 630,
+          alt: `Catálogo de ${categoria}`,
+        },
+      ],
+    },
+    // Añadimos esto para ayudar a Meta a entender la ruta limpia
+    alternates: {
+      canonical: `https://visor-catalogos.vercel.app/ver/${slug}`,
+    }
+  };
 }
-
 
 
 // 3. AGREGAR ESTA FUNCIÓN PARA QUE VERCEL SEPA QUÉ RUTAS EXISTEN EN EL BUILD
