@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+/*import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
@@ -18,4 +18,4 @@ export function middleware(request: NextRequest) {
 // Solo aplicamos este intermediario a las rutas de los catálogos
 export const config = {
   matcher: '/ver/:path*',
-};
+};*/
