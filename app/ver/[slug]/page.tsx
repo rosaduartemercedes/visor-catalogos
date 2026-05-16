@@ -31,17 +31,16 @@ const PAGINAS_MAP: Record<string, number> = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams?.slug;
-
-  if (!slug || !CATEGORIAS_MAP[slug]) return {};
+  const urlFinal = `https://visor-catalogos.vercel.app/ver/${slug || ''}`;
   
-  const categoria = CATEGORIAS_MAP[slug];
-  const urlFinal = `https://visor-catalogos.vercel.app/ver/${slug}`;
-  // Cambiamos a la imagen oficial del catálogo si existe, o mantenemos tu Cloudinary fija:
-  const imageUrl = 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png';
+  // Tu imagen fija de Cloudinary (esta nunca se va a mover de acá)
+  const imageUrl = 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png?v=1';
 
+  // Evaluamos de forma segura la categoría. Si no existe, usamos una por defecto.
+  // Así evitamos el "return {};" que rompía todo.
+  const categoria = slug && CATEGORIAS_MAP[slug] ? CATEGORIAS_MAP[slug] : 'Fotos y Videos';
 
-
-// 🔍 🚀 EL PRINT DE CONSOLA PARA DIAGNÓSTICO:
+  // 🔍 🚀 EL PRINT DE CONSOLA PARA DIAGNÓSTICO:
   console.log("========================================");
   console.log(`🤖 [META DEBUG] Procesando metadata para el slug: "${slug}"`);
   console.log(`📸 [META DEBUG] Imagen enviada a Meta: ${imageUrl}`);
@@ -49,10 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   console.log("========================================");
 
   return {
-    title: `Catálogo de ${categoria}`,
+    title: `Catálogo de ${categoria} - Look Photo & Film`,
     description: `Mirá el catálogo en línea o descargalo para ver sin conexión.`,
     openGraph: {
-      title: `Catálogo de ${categoria}`,
+      title: `Catálogo de ${categoria} - Look Photo & Film`,
       description: `Mirá el catálogo en línea o descargalo para ver sin conexión.`,
       url: urlFinal,
       siteName: 'Look Photo & Film',
@@ -69,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Catálogo de ${categoria}`,
+      title: `Catálogo de ${categoria} - Look Photo & Film`,
       description: `Mirá el catálogo en línea o descargalo para ver sin conexión.`,
       images: [imageUrl],
     },
