@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 
 // Configuración de renderizado estático estricto para Vercel
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 export const dynamicParams = false;
 export const revalidate = false;
 
