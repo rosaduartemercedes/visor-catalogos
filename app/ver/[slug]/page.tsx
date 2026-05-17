@@ -27,24 +27,19 @@ const PAGINAS_MAP: Record<string, number> = {
   look: 6,
 };
 
-// 1. GENERACIÓN DE METADATA (Corregida la asincronía)
+// 1. GENERACIÓN DE METADATA (Optimizada para el Parser de WhatsApp)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams?.slug;
   const urlFinal = `https://visor-catalogos.vercel.app/ver/${slug || ''}`;
   
-  // Tu imagen fija de Cloudinary (esta nunca se va a mover de acá)
-  const imageUrl = 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png?v=1';
+  // URL limpia sin queries raros que confundan la extensión final del archivo
+  const imageUrl = 'https://res.cloudinary.com/dyddy7avc/image/upload/v1778962076/Logo_web_3_opengraph-image_r1nkts.png';
 
-  // Evaluamos de forma segura la categoría. Si no existe, usamos una por defecto.
-  // Así evitamos el "return {};" que rompía todo.
   const categoria = slug && CATEGORIAS_MAP[slug] ? CATEGORIAS_MAP[slug] : 'Fotos y Videos';
 
-  // 🔍 🚀 EL PRINT DE CONSOLA PARA DIAGNÓSTICO:
   console.log("========================================");
-  console.log(`🤖 [META DEBUG] Procesando metadata para el slug: "${slug}"`);
-  console.log(`📸 [META DEBUG] Imagen enviada a Meta: ${imageUrl}`);
-  console.log(`📝 [META DEBUG] Título enviado: Catálogo de ${categoria}`);
+  console.log(`🤖 [META DEBUG] Procesando para WhatsApp: "${slug}"`);
   console.log("========================================");
 
   return {
@@ -55,16 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: `Mirá el catálogo en línea o descargalo para ver sin conexión.`,
       url: urlFinal,
       siteName: 'Look Photo & Film',
-      locale: 'es_AR',
+      locale: 'es_ES', // Estándar más compatible
       type: 'website',
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: `Catálogo de ${categoria} - Look Photo & Film`,
-        },
-      ],
+      // Enviamos tanto el string directo (para WhatsApp) como el objeto estructurado
+      images: [imageUrl], 
     },
     twitter: {
       card: 'summary_large_image',
@@ -77,6 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   };
 }
+
 
 // 2. RUTAS ESTÁTICAS
 export async function generateStaticParams() {
