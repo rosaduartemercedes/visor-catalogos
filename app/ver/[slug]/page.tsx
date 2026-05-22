@@ -140,7 +140,7 @@ export default async function VisorPage({ params }: Props) {
             </a>
 
             <a 
-              href="https://wa.me/541125589198" // ⚠️ Recuerda poner el formato internacional sin el + ni espacios
+              href="https://wa.me/+5491144139212" // ⚠️ Recuerda poner el formato internacional sin el + ni espacios
               target="_blank"
               rel="noopener noreferrer"
               className="text-[9px] tracking-widest bg-white text-black px-5 py-2 rounded-full font-bold uppercase hover:bg-zinc-200 transition"
