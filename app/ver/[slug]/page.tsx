@@ -17,6 +17,7 @@ const CATEGORIAS_MAP: Record<string, string> = {
   cumple: 'packs para fiestas.',
   locacion: 'locaciones.',
   look: 'looks.',
+  cumpleybook12c: 'combo eventos' 
 };
 
 const PAGINAS_MAP: Record<string, number> = {
@@ -25,6 +26,8 @@ const PAGINAS_MAP: Record<string, number> = {
   cumple: 5,
   locacion: 9,
   look: 6,
+  cumpleybook12c: 5,
+
 };
 
 // 1. GENERACIÓN DE METADATA (Optimizada para el Parser de WhatsApp)
