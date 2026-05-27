@@ -17,7 +17,7 @@ const CATEGORIAS_MAP: Record<string, string> = {
   cumple: 'packs para fiestas.',
   locacion: 'locaciones.',
   look: 'looks.',
-  cumpleybook12c: 'combo eventos' 
+  cumpleybook12c: 'promociones book + fiesta' 
 };
 
 const PAGINAS_MAP: Record<string, number> = {
